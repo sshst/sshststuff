@@ -1,5 +1,5 @@
 builds:
-  - program: sshst
+  - binary: sshst
     goarch: [amd64]
     goos: [darwin, linux]
     dir: cmd
