@@ -1,6 +1,7 @@
 package client
 
 type ListenConfig struct {
+	Version         string   `json:""`
 	ApiUrl          string   `json:""`
 	IdleTimeout     int      `json:""`
 	MaxTimeout      int      `json:""`
@@ -12,4 +13,3 @@ type ListenConfig struct {
 	NotifyTitle     string
 	GithubUsers     []string
 }
-

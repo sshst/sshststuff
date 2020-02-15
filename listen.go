@@ -33,7 +33,7 @@ func Listen(ctx context.Context, config ListenConfig) error {
 	headers := http.Header{}
 	header, _ := json.Marshal(config)
 	headers.Add("Sshst-Config", string(header))
-	headers.Add("Sshst-Version", Version)
+	headers.Add("Sshst-Commit", config.Version)
 
 	conn, err := connection(config.ApiUrl, headers)
 	if err != nil {

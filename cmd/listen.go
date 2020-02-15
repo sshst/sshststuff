@@ -38,6 +38,7 @@ func listenCmd() *cobra.Command {
 }
 
 func listen(cmd *cobra.Command, args []string) {
+	listenConfig.Version = version
 	err := client.Listen(context.Background(), listenConfig)
 	if err != nil {
 		panic(err)

@@ -42,7 +42,10 @@ func connect(cmd *cobra.Command, args []string) {
 			KeyLogWriter: tlslog.Writer,
 		},
 	}
-	wscon, _, err := dialer.Dial(url, http.Header{})
+
+	header := http.Header{}
+	header.Set("Sshst-Commit", commit)
+	wscon, _, err := dialer.Dial(url, header)
 
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "Error establishing TLS connection: %+v", err)
