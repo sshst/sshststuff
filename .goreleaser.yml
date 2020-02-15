@@ -1,5 +1,6 @@
 builds:
-  - goarch: [amd64]
+  - program: sshst
+    goarch: [amd64]
     goos: [darwin, linux]
     dir: cmd
     env:
