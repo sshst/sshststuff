@@ -1,25 +1,37 @@
 name: Go
-on: [push]
+on:
+  pull_request:
+  push:
 jobs:
 
   build:
     runs-on: ubuntu-latest
     steps:
 
-    - uses: actions/setup-go@v1
-      with:
-        go-version: 1.13
+      - uses: actions/setup-go@v1
+        with:
+          go-version: 1.13
 
-    - uses: actions/checkout@v2
+      - uses: actions/checkout@v2
 
-    - name: known hosts
-      run: "mkdir ~/.ssh && echo '@cert-authority * ssh-rsa AAAAB3NzaC1yc2EAAAA\
+      - name: git history
+        run: git fetch --prune --unshallow
+
+      - name: known hosts
+        run: "mkdir ~/.ssh && echo '@cert-authority * ssh-rsa AAAAB3NzaC1yc2EAAAA\
       DAQABAAABAQDZFVovbC6jV44UTyFhEfg861v4ddetMlC+IIRB3cPMotlCZg5MhL2sD3Y2FQVa\
       SVtQfVQ4+wyyJxhs3QzH2Qhhmm7thhs+D7uMJHMb+2jvCT3JdYLA/7II6oS+wmh5i5dMBMJtW\
       O/h81pbZt8LzadEGFzEbIsUU9s12m/Tq26g0petIPt5gzgiXjQ3wjN5lzt6NK5/iUVPxjgLxV\
       6BY1coDaC5ZQvW02naU2v7V01kL4MVHfIpy/9sMSt/2zFxg7lstSy9GQqwn4o/nHq/5yhlskj\
       Y/tpkBbAqRxp9hx9R+Ci3J5jDvks5l/eyUTyJVNa1ASnnqV2dWWGqB32FqIPn' >> ~/.ssh/known_hosts"
 
-    - name: test
-      run: go test -v ./...
+      - name: test
+        run: go test -v ./...
 
+      - uses: goreleaser/goreleaser-action@v1
+        if: startsWith(github.ref, 'refs/tags/')
+        with:
+          version: 0.126.0
+          args: release --rm-dist
+        env:
+          GITHUB_TOKEN: ${{ secrets.GORELEASER_GITHUB_TOKEN }}

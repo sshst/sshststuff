@@ -29,22 +29,20 @@ nfpms:
     formats: [deb]
 brews:
   - github:
-      owner: glassechidna
+      owner: sshst
       name: homebrew-taps
-    download_strategy: CurlDownloadStrategy
-    url_template: "http://downloads-ap-southeast-2.ssh.st/brew/{{ .ArtifactName }}"
     commit_author:
       name: Aidan Steele
       email: aidan.steele@glassechidna.com.au
     homepage: https://ssh.st
     description: TODO
-scoop:
-  bucket:
-    owner: glassechidna
-    name: scoop-bucket
-  commit_author:
-    name: Aidan Steele
-    email: aidan.steele@glassechidna.com.au
-  url_template: "http://downloads-ap-southeast-2.ssh.st/scoop/{{ .ArtifactName }}"
-  homepage: https://ssh.st
-  description: TODO
+#scoop:
+#  bucket:
+#    owner: sshst
+#    name: scoop-bucket
+#  commit_author:
+#    name: Aidan Steele
+#    email: aidan.steele@glassechidna.com.au
+#  url_template: "http://downloads-ap-southeast-2.ssh.st/scoop/{{ .ArtifactName }}"
+#  homepage: https://ssh.st
+#  description: TODO
