@@ -12,9 +12,6 @@ jobs:
 
     - uses: actions/checkout@v2
 
-    - name: build
-      run: go build -v .
-
     - name: known hosts
       run: "mkdir ~/.ssh && echo '@cert-authority * ssh-rsa AAAAB3NzaC1yc2EAAAA\
       DAQABAAABAQDZFVovbC6jV44UTyFhEfg861v4ddetMlC+IIRB3cPMotlCZg5MhL2sD3Y2FQVa\
