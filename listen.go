@@ -22,7 +22,6 @@ import (
 )
 
 var WebTerminalFingerprint = "SHA256:AgX6IK2m9OgKt54/33gZmCxrMLvtXjMWnJy7j38c2zI"
-var Version = "unknown"
 
 func Listen(ctx context.Context, config ListenConfig) error {
 	trusted := config.SshFingerprints
