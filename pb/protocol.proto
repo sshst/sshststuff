@@ -1,0 +1,29 @@
+syntax = "proto3";
+package pb;
+
+service ListenerControl {
+    rpc Kill (KillRequest) returns (KillResponse) {}
+    rpc GetHostKey (GetHostKeyRequest) returns (GetHostKeyResponse) {}
+    rpc PutSignedHostKey (PutSignedHostKeyRequest) returns (PutSignedHostKeyResponse) {}
+    rpc PutUrl (PutUrlRequest) returns (PutUrlResponse) {}
+}
+
+message KillRequest {
+    string requesterId = 1;
+}
+message KillResponse {}
+
+message GetHostKeyRequest {}
+message GetHostKeyResponse {
+    bytes key = 1;
+}
+
+message PutSignedHostKeyRequest {
+    bytes key = 1;
+}
+message PutSignedHostKeyResponse {}
+
+message PutUrlRequest {
+    string url = 1;
+}
+message PutUrlResponse {}

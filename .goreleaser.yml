@@ -1,0 +1,50 @@
+before:
+  hooks:
+    - go generate ./...
+builds:
+  - goarch: [amd64]
+    goos: [darwin, linux]
+    env:
+      - CGO_ENABLED=0
+archives:
+  - replacements:
+      darwin: Darwin
+      linux: Linux
+      amd64: x86_64
+checksum:
+  name_template: 'checksums.txt'
+snapshot:
+  name_template: "{{ .Tag }}-next"
+changelog:
+  sort: asc
+  filters:
+    exclude:
+      - '^docs:'
+      - '^.github:'
+nfpms:
+  - vendor: ssh.st
+    homepage: https://ssh.st
+    maintainer: ssh.st team <ssh.st@ssh.st>
+    description: TODO
+    formats: [deb]
+brews:
+  - github:
+      owner: glassechidna
+      name: homebrew-taps
+    download_strategy: CurlDownloadStrategy
+    url_template: "http://downloads-ap-southeast-2.ssh.st/brew/{{ .ArtifactName }}"
+    commit_author:
+      name: Aidan Steele
+      email: aidan.steele@glassechidna.com.au
+    homepage: https://ssh.st
+    description: TODO
+scoop:
+  bucket:
+    owner: glassechidna
+    name: scoop-bucket
+  commit_author:
+    name: Aidan Steele
+    email: aidan.steele@glassechidna.com.au
+  url_template: "http://downloads-ap-southeast-2.ssh.st/scoop/{{ .ArtifactName }}"
+  homepage: https://ssh.st
+  description: TODO
