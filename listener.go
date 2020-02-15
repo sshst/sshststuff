@@ -57,6 +57,7 @@ func shellCommand() []string {
 	paths := []string{
 		"/bin/bash",
 		"/bin/dash",
+		"/bin/zsh",
 	}
 
 	for _, path := range paths {
