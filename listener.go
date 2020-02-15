@@ -56,7 +56,6 @@ func (l *listener) timeout(seconds int) {
 func shellCommand() []string {
 	paths := []string{
 		"/bin/bash",
-		"/bin/dash",
 		"/bin/zsh",
 	}
 
