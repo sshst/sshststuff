@@ -149,4 +149,3 @@ func effectiveFingerprint(key ssh.PublicKey) string {
 	}
 	return gossh.FingerprintSHA256(key)
 }
-
