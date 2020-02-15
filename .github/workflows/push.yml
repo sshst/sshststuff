@@ -16,7 +16,7 @@ jobs:
       run: go build -v .
 
     - name: known hosts
-      run: "echo '@cert-authority * ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAAB\
+      run: "mkdir ~/.ssh && echo '@cert-authority * ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAAB\
       AQDZFVovbC6jV44UTyFhEfg861v4ddetMlC+IIRB3cPMotlCZg5MhL2sD3Y2FQVaSV\
       tQfVQ4+wyyJxhs3QzH2Qhhmm7thhs+D7uMJHMb+2jvCT3JdYLA/7II6oS+wmh5i5dM\
       BMJtWO/h81pbZt8LzadEGFzEbIsUU9s12m/Tq26g0petIPt5gzgiXjQ3wjN5lzt6NK\
