@@ -1,7 +1,7 @@
 builds:
   - goarch: [amd64]
     goos: [darwin, linux]
-    main: ./cmd/main.go
+    dir: cmd
     env:
       - CGO_ENABLED=0
 archives:
