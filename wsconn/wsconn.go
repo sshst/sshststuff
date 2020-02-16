@@ -14,7 +14,7 @@ type wsConn struct {
 	buff []byte
 }
 
-func New(websocketConn *websocket.Conn) net.Conn   {
+func NetConn(websocketConn *websocket.Conn) net.Conn   {
 	return &wsConn{Conn: websocketConn}
 }
 

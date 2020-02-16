@@ -14,7 +14,7 @@ import (
 )
 
 type listener struct {
-	server        ssh.Server
+	server        *ssh.Server
 	command       []string
 	activechanged chan int
 }

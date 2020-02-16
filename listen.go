@@ -7,7 +7,6 @@ import (
 	"encoding/json"
 	"fmt"
 	"github.com/gliderlabs/ssh"
-	"github.com/gorilla/websocket"
 	"github.com/hashicorp/yamux"
 	"github.com/pkg/errors"
 	"github.com/soheilhy/cmux"
@@ -15,9 +14,7 @@ import (
 	"github.com/sshst/sshststuff/wsconn"
 	gossh "golang.org/x/crypto/ssh"
 	"google.golang.org/grpc"
-	"net"
 	"net/http"
-	"strings"
 	"time"
 )
 
@@ -34,7 +31,7 @@ func Listen(ctx context.Context, config ListenConfig) error {
 	headers.Add("Sshst-Config", string(header))
 	headers.Add("Sshst-Commit", config.Version)
 
-	conn, err := connection(config.ApiUrl, headers)
+	conn, _, err := wsconn.DialContext(ctx, config.ApiUrl, headers)
 	if err != nil {
 		return err
 	}
@@ -80,8 +77,8 @@ func Listen(ctx context.Context, config ListenConfig) error {
 	}
 }
 
-func server(timeout time.Duration, trustedFingerprints []string) ssh.Server {
-	return ssh.Server{
+func server(timeout time.Duration, trustedFingerprints []string) *ssh.Server {
+	return &ssh.Server{
 		HostSigners: []ssh.Signer{newSigner()},
 		MaxTimeout:  timeout,
 		PublicKeyHandler: func(ctx ssh.Context, key ssh.PublicKey) bool {
@@ -101,27 +98,6 @@ func server(timeout time.Duration, trustedFingerprints []string) ssh.Server {
 			return true
 		},
 	}
-}
-
-func connection(url string, headers http.Header) (net.Conn, error) {
-	if strings.HasPrefix(url, "https") {
-		url = strings.Replace(url, "https", "wss", 1)
-	}
-
-	wsc, resp, err := websocket.DefaultDialer.Dial(url, headers)
-	if err != nil {
-		if resp != nil {
-			if resp.StatusCode == 307 || resp.StatusCode == 308 {
-				url = resp.Header.Get("Location")
-				return connection(url, headers)
-			}
-		}
-
-		return nil, errors.WithStack(err)
-	}
-
-	c := wsconn.New(wsc)
-	return c, nil
 }
 
 func fingerprinter(s ssh.PublicKey) string {
