@@ -20,6 +20,7 @@ import (
 )
 
 var WebTerminalFingerprint = "SHA256:AgX6IK2m9OgKt54/33gZmCxrMLvtXjMWnJy7j38c2zI"
+var SshstPubKey = "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDZFVovbC6jV44UTyFhEfg861v4ddetMlC+IIRB3cPMotlCZg5MhL2sD3Y2FQVaSVtQfVQ4+wyyJxhs3QzH2Qhhmm7thhs+D7uMJHMb+2jvCT3JdYLA/7II6oS+wmh5i5dMBMJtWO/h81pbZt8LzadEGFzEbIsUU9s12m/Tq26g0petIPt5gzgiXjQ3wjN5lzt6NK5/iUVPxjgLxV6BY1coDaC5ZQvW02naU2v7V01kL4MVHfIpy/9sMSt/2zFxg7lstSy9GQqwn4o/nHq/5yhlskjY/tpkBbAqRxp9hx9R+Ci3J5jDvks5l/eyUTyJVNa1ASnnqV2dWWGqB32FqIPn"
 
 func Listen(ctx context.Context, config ListenConfig) error {
 	trusted := config.SSHFingerprints

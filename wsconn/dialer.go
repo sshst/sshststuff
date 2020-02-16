@@ -36,7 +36,9 @@ redirect:
 		if resp != nil {
 			if limit > 0 && (resp.StatusCode == 307 || resp.StatusCode == 308) {
 				limit--
+
 				url = resp.Header.Get("Location")
+
 				goto redirect
 			}
 		}
