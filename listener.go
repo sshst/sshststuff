@@ -69,7 +69,7 @@ func shellCommand() []string {
 	return []string{"/bin/sh"}
 }
 
-func (l *listener) handleSsh(s ssh.Session) {
+func (l *listener) handleSSH(s ssh.Session) {
 	fingerprint := fingerprinter(s.PublicKey())
 
 	sconn := s.Context().Value(ssh.ContextKeyConn).(*gossh.ServerConn)

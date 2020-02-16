@@ -15,6 +15,7 @@ type wsConn struct {
 	buff []byte
 }
 
+// NetConn wraps a websocket.Conn in a type that conforms to net.Conn
 func NetConn(websocketConn *websocket.Conn) net.Conn {
 	return &wsConn{Conn: websocketConn}
 }

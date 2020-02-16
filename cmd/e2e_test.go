@@ -87,7 +87,14 @@ func TestEndToEnd(t *testing.T) {
 	buf := &bytes.Buffer{}
 	multi := io.MultiWriter(buf, os.Stderr)
 
-	cmd = exec.CommandContext(ctx, "ssh", "-i", pkeyPath, "-o", fmt.Sprintf("ProxyCommand %s connect --sni %s", binPath, host), "test@"+host, "/bin/sh -c 'echo $SSHST'")
+	cmd = exec.CommandContext(
+		ctx,
+		"ssh",
+		"-i", pkeyPath,
+		"-o", fmt.Sprintf("ProxyCommand %s connect --sni %s", binPath, host),
+		"test@"+host,
+		"/bin/sh -c 'echo $SSHST'",
+	)
 	cmd.Stdout = multi
 	cmd.Stderr = multi
 	err = cmd.Run()

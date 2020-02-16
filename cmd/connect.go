@@ -37,7 +37,7 @@ func connect(cmd *cobra.Command, args []string) {
 	header := http.Header{}
 	header.Set("Sshst-Commit", commit)
 
-	conn, _, err := wsconn.DialContext(context.Background(), url, header)
+	conn, err := wsconn.DialContext(context.Background(), url, header)
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "Error establishing TLS connection: %+v", err)
 		os.Exit(1)

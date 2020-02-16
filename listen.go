@@ -22,7 +22,7 @@ import (
 var WebTerminalFingerprint = "SHA256:AgX6IK2m9OgKt54/33gZmCxrMLvtXjMWnJy7j38c2zI"
 
 func Listen(ctx context.Context, config ListenConfig) error {
-	trusted := config.SshFingerprints
+	trusted := config.SSHFingerprints
 	if config.WebOk {
 		trusted = append(trusted, WebTerminalFingerprint)
 	}
@@ -32,7 +32,7 @@ func Listen(ctx context.Context, config ListenConfig) error {
 	headers.Add("Sshst-Config", string(header))
 	headers.Add("Sshst-Commit", config.Version)
 
-	conn, _, err := wsconn.DialContext(ctx, config.ApiUrl, headers)
+	conn, err := wsconn.DialContext(ctx, config.APIURL, headers)
 	if err != nil {
 		return err
 	}
@@ -58,7 +58,7 @@ func Listen(ctx context.Context, config ListenConfig) error {
 	pb.RegisterListenerControlServer(control, &controlChannel{hk: l})
 	go control.Serve(grpcL)
 
-	server.Handler = l.handleSsh
+	server.Handler = l.handleSSH
 	go server.Serve(sshL)
 
 	go l.timeout(config.IdleTimeout)
