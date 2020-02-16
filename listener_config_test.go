@@ -2,8 +2,9 @@ package client
 
 import (
 	"encoding/json"
-	"github.com/stretchr/testify/assert"
 	"testing"
+
+	"github.com/stretchr/testify/assert"
 )
 
 func TestHostSeedNotDisclosed(t *testing.T) {

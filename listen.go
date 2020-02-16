@@ -6,6 +6,9 @@ import (
 	"crypto/rsa"
 	"encoding/json"
 	"fmt"
+	"net/http"
+	"time"
+
 	"github.com/gliderlabs/ssh"
 	"github.com/hashicorp/yamux"
 	"github.com/pkg/errors"
@@ -14,8 +17,6 @@ import (
 	"github.com/sshst/sshststuff/wsconn"
 	gossh "golang.org/x/crypto/ssh"
 	"google.golang.org/grpc"
-	"net/http"
-	"time"
 )
 
 var WebTerminalFingerprint = "SHA256:AgX6IK2m9OgKt54/33gZmCxrMLvtXjMWnJy7j38c2zI"

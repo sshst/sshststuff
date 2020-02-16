@@ -3,10 +3,11 @@ package wsconn
 // from https://github.com/jpillora/chisel/blob/2708d5cd208cda9b315d6788674ee828a2007f8d/share/conn_ws.go
 
 import (
-	"github.com/gorilla/websocket"
 	"log"
 	"net"
 	"time"
+
+	"github.com/gorilla/websocket"
 )
 
 type wsConn struct {
@@ -14,7 +15,7 @@ type wsConn struct {
 	buff []byte
 }
 
-func NetConn(websocketConn *websocket.Conn) net.Conn   {
+func NetConn(websocketConn *websocket.Conn) net.Conn {
 	return &wsConn{Conn: websocketConn}
 }
 

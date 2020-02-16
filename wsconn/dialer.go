@@ -3,13 +3,14 @@ package wsconn
 import (
 	"context"
 	"crypto/tls"
-	"github.com/gorilla/websocket"
-	"github.com/pkg/errors"
-	"github.com/sshst/sshststuff/tlslog"
 	"net"
 	"net/http"
 	"strings"
 	"time"
+
+	"github.com/gorilla/websocket"
+	"github.com/pkg/errors"
+	"github.com/sshst/sshststuff/tlslog"
 )
 
 func DialContext(ctx context.Context, url string, headers http.Header) (net.Conn, *http.Response, error) {

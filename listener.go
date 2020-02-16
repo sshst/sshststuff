@@ -2,15 +2,16 @@ package client
 
 import (
 	"fmt"
-	"github.com/gliderlabs/ssh"
-	"github.com/kr/pty"
-	gossh "golang.org/x/crypto/ssh"
 	"io"
 	"os"
 	"os/exec"
 	"syscall"
 	"time"
 	"unsafe"
+
+	"github.com/gliderlabs/ssh"
+	"github.com/kr/pty"
+	gossh "golang.org/x/crypto/ssh"
 )
 
 type listener struct {
