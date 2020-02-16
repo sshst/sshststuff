@@ -11,14 +11,11 @@ jobs:
 
       - uses: actions/checkout@v2
 
-      - name: known hosts
-        run: "mkdir ~/.ssh && echo '@cert-authority * ssh-rsa AAAAB3NzaC1yc2EA\
-              AAADAQABAAABAQDZFVovbC6jV44UTyFhEfg861v4ddetMlC+IIRB3cPMotlCZg5M\
-              hL2sD3Y2FQVaSVtQfVQ4+wyyJxhs3QzH2Qhhmm7thhs+D7uMJHMb+2jvCT3JdYLA\
-              /7II6oS+wmh5i5dMBMJtWO/h81pbZt8LzadEGFzEbIsUU9s12m/Tq26g0petIPt5\
-              gzgiXjQ3wjN5lzt6NK5/iUVPxjgLxV6BY1coDaC5ZQvW02naU2v7V01kL4MVHfIp\
-              y/9sMSt/2zFxg7lstSy9GQqwn4o/nHq/5yhlskjY/tpkBbAqRxp9hx9R+Ci3J5jD\
-              vks5l/eyUTyJVNa1ASnnqV2dWWGqB32FqIPn' >> ~/.ssh/known_hosts"
+      - name: setup
+        run: |
+          set -eux
+          go build -o sshst ./cmd
+          ./sshst setup | sh
 
       - name: test
         run: go test -v ./...
