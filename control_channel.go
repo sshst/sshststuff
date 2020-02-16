@@ -3,9 +3,10 @@ package client
 import (
 	"context"
 	"fmt"
+	"os"
+
 	"github.com/sshst/sshststuff/pb"
 	"golang.org/x/crypto/ssh"
-	"os"
 )
 
 type HostKeyer interface {

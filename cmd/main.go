@@ -8,6 +8,7 @@ func main() {
 	root := &cobra.Command{Use: "sshst"}
 	root.AddCommand(listenCmd())
 	root.AddCommand(connectCmd())
+	root.AddCommand(setupCmd())
 
 	err := root.Execute()
 	if err != nil {

@@ -2,9 +2,10 @@ package main
 
 import (
 	"context"
+	"os"
+
 	"github.com/spf13/cobra"
 	"github.com/sshst/sshststuff"
-	"os"
 )
 
 var listenConfig client.ListenConfig
@@ -16,7 +17,7 @@ func listenCmd() *cobra.Command {
 		Run:   listen,
 	}
 
-	listenCmd.PersistentFlags().StringVar(&listenConfig.ApiUrl, "api", "https://api.ssh.st/api/listeners", "")
+	listenCmd.PersistentFlags().StringVar(&listenConfig.APIURL, "api", "https://api.ssh.st/api/listeners", "")
 	listenCmd.PersistentFlags().MarkHidden("api")
 
 	listenCmd.PersistentFlags().IntVar(&listenConfig.IdleTimeout, "idle-timeout", 30, "")
@@ -25,7 +26,7 @@ func listenCmd() *cobra.Command {
 	listenCmd.PersistentFlags().StringVar(&listenConfig.NotifyUser, "notify-user", "", "")
 	listenCmd.PersistentFlags().StringVar(&listenConfig.NotifyTitle, "notify-title", "", "")
 	listenCmd.PersistentFlags().StringSliceVarP(&listenConfig.GithubUsers, "github", "g", []string{}, "")
-	listenCmd.PersistentFlags().StringSliceVarP(&listenConfig.SshFingerprints, "fingerprint", "f", []string{}, "")
+	listenCmd.PersistentFlags().StringSliceVarP(&listenConfig.SSHFingerprints, "fingerprint", "f", []string{}, "")
 
 	codebuildCmd := &cobra.Command{Use: "codebuild", Run: codebuild}
 	codebuildCmd.PersistentFlags().Bool("always", false, "")

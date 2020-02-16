@@ -6,8 +6,10 @@ import (
 	"crypto/rsa"
 	"encoding/json"
 	"fmt"
+	"net/http"
+	"time"
+
 	"github.com/gliderlabs/ssh"
-	"github.com/gorilla/websocket"
 	"github.com/hashicorp/yamux"
 	"github.com/pkg/errors"
 	"github.com/soheilhy/cmux"
@@ -15,16 +17,13 @@ import (
 	"github.com/sshst/sshststuff/wsconn"
 	gossh "golang.org/x/crypto/ssh"
 	"google.golang.org/grpc"
-	"net"
-	"net/http"
-	"strings"
-	"time"
 )
 
 var WebTerminalFingerprint = "SHA256:AgX6IK2m9OgKt54/33gZmCxrMLvtXjMWnJy7j38c2zI"
+var SshstPubKey = "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDZFVovbC6jV44UTyFhEfg861v4ddetMlC+IIRB3cPMotlCZg5MhL2sD3Y2FQVaSVtQfVQ4+wyyJxhs3QzH2Qhhmm7thhs+D7uMJHMb+2jvCT3JdYLA/7II6oS+wmh5i5dMBMJtWO/h81pbZt8LzadEGFzEbIsUU9s12m/Tq26g0petIPt5gzgiXjQ3wjN5lzt6NK5/iUVPxjgLxV6BY1coDaC5ZQvW02naU2v7V01kL4MVHfIpy/9sMSt/2zFxg7lstSy9GQqwn4o/nHq/5yhlskjY/tpkBbAqRxp9hx9R+Ci3J5jDvks5l/eyUTyJVNa1ASnnqV2dWWGqB32FqIPn"
 
 func Listen(ctx context.Context, config ListenConfig) error {
-	trusted := config.SshFingerprints
+	trusted := config.SSHFingerprints
 	if config.WebOk {
 		trusted = append(trusted, WebTerminalFingerprint)
 	}
@@ -34,7 +33,7 @@ func Listen(ctx context.Context, config ListenConfig) error {
 	headers.Add("Sshst-Config", string(header))
 	headers.Add("Sshst-Commit", config.Version)
 
-	conn, err := connection(config.ApiUrl, headers)
+	conn, err := wsconn.DialContext(ctx, config.APIURL, headers)
 	if err != nil {
 		return err
 	}
@@ -60,7 +59,7 @@ func Listen(ctx context.Context, config ListenConfig) error {
 	pb.RegisterListenerControlServer(control, &controlChannel{hk: l})
 	go control.Serve(grpcL)
 
-	server.Handler = l.handleSsh
+	server.Handler = l.handleSSH
 	go server.Serve(sshL)
 
 	go l.timeout(config.IdleTimeout)
@@ -80,8 +79,8 @@ func Listen(ctx context.Context, config ListenConfig) error {
 	}
 }
 
-func server(timeout time.Duration, trustedFingerprints []string) ssh.Server {
-	return ssh.Server{
+func server(timeout time.Duration, trustedFingerprints []string) *ssh.Server {
+	return &ssh.Server{
 		HostSigners: []ssh.Signer{newSigner()},
 		MaxTimeout:  timeout,
 		PublicKeyHandler: func(ctx ssh.Context, key ssh.PublicKey) bool {
@@ -101,27 +100,6 @@ func server(timeout time.Duration, trustedFingerprints []string) ssh.Server {
 			return true
 		},
 	}
-}
-
-func connection(url string, headers http.Header) (net.Conn, error) {
-	if strings.HasPrefix(url, "https") {
-		url = strings.Replace(url, "https", "wss", 1)
-	}
-
-	wsc, resp, err := websocket.DefaultDialer.Dial(url, headers)
-	if err != nil {
-		if resp != nil {
-			if resp.StatusCode == 307 || resp.StatusCode == 308 {
-				url = resp.Header.Get("Location")
-				return connection(url, headers)
-			}
-		}
-
-		return nil, errors.WithStack(err)
-	}
-
-	c := wsconn.New(wsc)
-	return c, nil
 }
 
 func fingerprinter(s ssh.PublicKey) string {
@@ -149,4 +127,3 @@ func effectiveFingerprint(key ssh.PublicKey) string {
 	}
 	return gossh.FingerprintSHA256(key)
 }
-

@@ -9,9 +9,6 @@ import (
 	"crypto/x509"
 	"encoding/pem"
 	"fmt"
-	"github.com/stretchr/testify/assert"
-	"github.com/stretchr/testify/require"
-	gossh "golang.org/x/crypto/ssh"
 	"io"
 	"io/ioutil"
 	"os"
@@ -20,6 +17,10 @@ import (
 	"strings"
 	"testing"
 	"time"
+
+	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
+	gossh "golang.org/x/crypto/ssh"
 )
 
 func TestEndToEnd(t *testing.T) {
@@ -86,7 +87,14 @@ func TestEndToEnd(t *testing.T) {
 	buf := &bytes.Buffer{}
 	multi := io.MultiWriter(buf, os.Stderr)
 
-	cmd = exec.CommandContext(ctx, "ssh",  "-i", pkeyPath, "-o", fmt.Sprintf("ProxyCommand %s connect --sni %s", binPath, host), "test@"+host, "/bin/sh -c 'echo $SSHST'")
+	cmd = exec.CommandContext(
+		ctx,
+		"ssh",
+		"-i", pkeyPath,
+		"-o", fmt.Sprintf("ProxyCommand %s connect --sni %s", binPath, host),
+		"test@"+host,
+		"/bin/sh -c 'echo $SSHST'",
+	)
 	cmd.Stdout = multi
 	cmd.Stderr = multi
 	err = cmd.Run()

@@ -2,19 +2,20 @@ package client
 
 import (
 	"fmt"
-	"github.com/gliderlabs/ssh"
-	"github.com/kr/pty"
-	gossh "golang.org/x/crypto/ssh"
 	"io"
 	"os"
 	"os/exec"
 	"syscall"
 	"time"
 	"unsafe"
+
+	"github.com/gliderlabs/ssh"
+	"github.com/kr/pty"
+	gossh "golang.org/x/crypto/ssh"
 )
 
 type listener struct {
-	server        ssh.Server
+	server        *ssh.Server
 	command       []string
 	activechanged chan int
 }
@@ -68,7 +69,7 @@ func shellCommand() []string {
 	return []string{"/bin/sh"}
 }
 
-func (l *listener) handleSsh(s ssh.Session) {
+func (l *listener) handleSSH(s ssh.Session) {
 	fingerprint := fingerprinter(s.PublicKey())
 
 	sconn := s.Context().Value(ssh.ContextKeyConn).(*gossh.ServerConn)
