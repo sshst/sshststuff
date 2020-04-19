@@ -9,6 +9,7 @@ func main() {
 	root.AddCommand(listenCmd())
 	root.AddCommand(connectCmd())
 	root.AddCommand(setupCmd())
+	root.AddCommand(versionCmd())
 
 	err := root.Execute()
 	if err != nil {

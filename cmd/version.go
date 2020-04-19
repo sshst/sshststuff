@@ -12,8 +12,8 @@ var date = ""
 
 func versionCmd() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "connect",
-		Short: "SSH ProxyCommand to connect to ssh.st-proxied services",
+		Use:   "version",
+		Short: "Show version and build info",
 		Run: func(cmd *cobra.Command, args []string) {
 			fmt.Printf(`
 sshst
