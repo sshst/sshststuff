@@ -1,13 +1,8 @@
 package main
 
 import (
-	"bytes"
 	"context"
-	"fmt"
-	"golang.org/x/crypto/ssh"
 	"gopkg.in/src-d/go-git.v4"
-	"io/ioutil"
-	"net/http"
 	"os"
 	"strings"
 
@@ -52,43 +47,10 @@ func listen(cmd *cobra.Command, args []string) {
 
 	listenConfig.Version = version
 	addGithubSshKeys(&listenConfig)
-	
+
 	err := client.Listen(context.Background(), listenConfig)
 	if err != nil {
 		panic(err)
-	}
-}
-
-func addGithubSshKeys(listenConfig *client.ListenConfig) {
-	warn := func(username, msg string) {
-		fmt.Fprintf(os.Stderr, "Error getting SSH key for %s: %s\n", username, msg)
-	}
-
-	for _, username := range listenConfig.GithubUsers {
-		resp, err := http.Get(fmt.Sprintf("https://github.com/%s.keys", username))
-		if err != nil {
-			warn(username, err.Error())
-			continue
-		}
-
-		authorizedKeysBytes, err := ioutil.ReadAll(resp.Body)
-		if err != nil {
-			warn(username, err.Error())
-			continue
-		}
-
-		lines := bytes.Split(authorizedKeysBytes, []byte("\n"))
-		for _, line := range lines {
-			pubkey, _, _, _, err := ssh.ParseAuthorizedKey(line)
-			if err != nil {
-				warn(username, err.Error())
-				continue
-			}
-
-			fingerprint := ssh.FingerprintSHA256(pubkey)
-			listenConfig.SSHFingerprints = append(listenConfig.SSHFingerprints, fingerprint)
-			fmt.Fprintf(os.Stderr, "Trusting fingerprint %s for GitHub user %s\n", fingerprint, username)
-		}
 	}
 }
 
