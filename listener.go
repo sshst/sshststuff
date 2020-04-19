@@ -82,15 +82,7 @@ func (l *listener) handleSSH(s ssh.Session) {
 	l.activechanged <- 1
 	fmt.Printf("Accepted connection from %s\n", fingerprint)
 
-	command := l.command
-	if len(s.Command()) > 0 {
-		command = s.Command()
-	}
-
-	if len(command) == 0 {
-		command = shellCommand()
-	}
-
+	command := l.getcmd(s)
 	cmd := exec.Command(command[0], command[1:]...)
 	cmd.Env = append(os.Environ(), "SSHST=true")
 
@@ -112,7 +104,7 @@ func (l *listener) handleSSH(s ssh.Session) {
 		cmd.Start()
 
 		go io.Copy(s, out)
-		go io.Copy(s, errp)
+		go io.Copy(s.Stderr(), errp)
 		go func() {
 			io.Copy(in, s)
 			in.Close()
@@ -123,6 +115,20 @@ func (l *listener) handleSSH(s ssh.Session) {
 			s.Exit(0)
 		}
 	}
+}
+
+func (l *listener) getcmd(s ssh.Session) []string {
+	if len(l.command) > 0 {
+		return l.command
+	}
+
+	// very loosely based on https://github.com/openssh/openssh-portable/blob/c7c099060f82ffe6a36d8785ecf6052e12fd92f0/session.c#L1680-L1717
+
+	if len(s.Command()) == 0 {
+		return shellCommand() // TODO really these need argv0[0] == '-' to be a "login shell"
+	}
+
+	return []string{"/bin/sh", "-c", s.RawCommand()}
 }
 
 func handleWinch(winCh <-chan ssh.Window, f *os.File) {
