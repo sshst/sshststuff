@@ -80,9 +80,19 @@ func Listen(ctx context.Context, config ListenConfig) error {
 }
 
 func server(timeout time.Duration, trustedFingerprints []string) *ssh.Server {
+	forwardHandler := &ssh.ForwardedTCPHandler{}
+
 	return &ssh.Server{
 		HostSigners: []ssh.Signer{newSigner()},
 		MaxTimeout:  timeout,
+		ChannelHandlers: map[string]ssh.ChannelHandler{
+			"session":      ssh.DefaultSessionHandler,
+			"direct-tcpip": ssh.DirectTCPIPHandler,
+		},
+		RequestHandlers: map[string]ssh.RequestHandler{
+			"tcpip-forward":        forwardHandler.HandleSSHRequest,
+			"cancel-tcpip-forward": forwardHandler.HandleSSHRequest,
+		},
 		PublicKeyHandler: func(ctx ssh.Context, key ssh.PublicKey) bool {
 			fingerprint := effectiveFingerprint(key)
 			for _, trusted := range trustedFingerprints {
