@@ -25,7 +25,7 @@ changelog:
 nfpms:
   - vendor: ssh.st
     homepage: https://ssh.st
-    maintainer: ssh.st team <ssh.st@ssh.st>
+    maintainer: Aidan Steele <aidan.steele@glassechidna.com.au>
     description: TODO
     formats: [deb]
 brews:
