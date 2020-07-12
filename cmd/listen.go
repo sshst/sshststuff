@@ -3,12 +3,10 @@ package main
 import (
 	"context"
 	"fmt"
-	"gopkg.in/src-d/go-git.v4"
-	"os"
-	"strings"
-
 	"github.com/spf13/cobra"
 	"github.com/sshst/sshststuff"
+	"gopkg.in/src-d/go-git.v4"
+	"os"
 )
 
 var listenConfig client.ListenConfig
@@ -31,13 +29,6 @@ func listenCmd() *cobra.Command {
 	pf.StringSliceVarP(&listenConfig.GithubUsers, "github", "g", []string{}, "")
 	pf.StringSliceVarP(&listenConfig.SSHFingerprints, "fingerprint", "f", []string{}, "")
 
-	codebuildCmd := &cobra.Command{Use: "codebuild", Run: codebuild}
-	codebuildCmd.PersistentFlags().Bool("always", false, "")
-	listenCmd.AddCommand(codebuildCmd)
-
-	githubCmd := &cobra.Command{Use: "github", Run: github}
-	listenCmd.AddCommand(githubCmd)
-
 	return listenCmd
 }
 
@@ -58,21 +49,6 @@ func listen(cmd *cobra.Command, args []string) {
 	if err != nil {
 		panic(err)
 	}
-}
-
-func codebuild(cmd *cobra.Command, args []string) {
-	always, _ := cmd.PersistentFlags().GetBool("always")
-	if os.Getenv("CODEBUILD_BUILD_SUCCEEDING") == "1" && !always {
-		return
-	}
-
-	if len(listenConfig.NotifyTitle) == 0 {
-		id := os.Getenv("CODEBUILD_BUILD_ID")
-		split := strings.SplitN(id, ":", 2)
-		listenConfig.NotifyTitle = split[0]
-	}
-
-	listen(cmd, args)
 }
 
 func headCommitAuthor() string {
@@ -97,8 +73,4 @@ func headCommitAuthor() string {
 	}
 
 	return commit.Author.Email
-}
-
-func github(cmd *cobra.Command, args []string) {
-	listen(cmd, args)
 }
