@@ -2,6 +2,7 @@ package main
 
 import (
 	"context"
+	"fmt"
 	"gopkg.in/src-d/go-git.v4"
 	"os"
 	"strings"
@@ -19,16 +20,16 @@ func listenCmd() *cobra.Command {
 		Run:   listen,
 	}
 
-	listenCmd.PersistentFlags().StringVar(&listenConfig.APIURL, "api", "https://api.ssh.st/api/listeners", "")
-	listenCmd.PersistentFlags().MarkHidden("api")
+	pf := listenCmd.PersistentFlags()
+	pf.StringVar(&listenConfig.APIURL, "api", "https://api.ssh.st/api/listeners", "")
+	pf.MarkHidden("api")
 
-	listenCmd.PersistentFlags().IntVar(&listenConfig.IdleTimeout, "idle-timeout", 30, "")
-	listenCmd.PersistentFlags().BoolVar(&listenConfig.WebOk, "web-ok", true, "")
-	// TODO command
-	listenCmd.PersistentFlags().StringVar(&listenConfig.NotifyUser, "notify-user", "", "")
-	listenCmd.PersistentFlags().StringVar(&listenConfig.NotifyTitle, "notify-title", "", "")
-	listenCmd.PersistentFlags().StringSliceVarP(&listenConfig.GithubUsers, "github", "g", []string{}, "")
-	listenCmd.PersistentFlags().StringSliceVarP(&listenConfig.SSHFingerprints, "fingerprint", "f", []string{}, "")
+	pf.IntVar(&listenConfig.IdleTimeout, "idle-timeout", 30, "")
+	pf.BoolVar(&listenConfig.WebOk, "web-ok", false, "")
+	pf.StringVar(&listenConfig.NotifyUser, "notify-user", "", "")
+	pf.StringVar(&listenConfig.NotifyTitle, "notify-title", "", "")
+	pf.StringSliceVarP(&listenConfig.GithubUsers, "github", "g", []string{}, "")
+	pf.StringSliceVarP(&listenConfig.SSHFingerprints, "fingerprint", "f", []string{}, "")
 
 	codebuildCmd := &cobra.Command{Use: "codebuild", Run: codebuild}
 	codebuildCmd.PersistentFlags().Bool("always", false, "")
@@ -47,6 +48,11 @@ func listen(cmd *cobra.Command, args []string) {
 
 	listenConfig.Version = version
 	addGithubSshKeys(&listenConfig)
+
+	if len(listenConfig.SSHFingerprints) == 0 {
+		fmt.Fprintln(os.Stderr, "Error: No SSH keys provided (either directly or via GitHub) so it doesn't make sense to listen for no one. Exiting now.")
+		os.Exit(1)
+	}
 
 	err := client.Listen(context.Background(), listenConfig)
 	if err != nil {

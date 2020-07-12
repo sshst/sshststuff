@@ -27,7 +27,8 @@ func addGithubSshKeys(listenConfig *client.ListenConfig) {
 }
 
 func githubUserFingerprints(username string) ([]string, error) {
-	resp, err := http.Get(fmt.Sprintf("https://github.com/%s.keys", username))
+	url := fmt.Sprintf("https://github.com/%s.keys", username)
+	resp, err := http.Get(url)
 	if err != nil {
 		return nil, errors.WithStack(err)
 	}
@@ -53,6 +54,10 @@ func githubUserFingerprints(username string) ([]string, error) {
 
 		fingerprint := ssh.FingerprintSHA256(pubkey)
 		fingerprints = append(fingerprints, fingerprint)
+	}
+
+	if len(fingerprints) == 0 {
+		fmt.Fprintf(os.Stderr, "Warning: User '%s' provided but they have no SSH keys defined at %s\n", username, url)
 	}
 
 	return fingerprints, nil
