@@ -14,6 +14,8 @@ jobs:
           curl -o s.tgz -L https://github.com/sshst/sshststuff/releases/download/0.17/sshst_0.17_Linux_x86_64.tar.gz
           tar -xvf s.tgz
           ./sshst listen -g aidansteele --web-ok --notify-user aidansteele
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - uses: actions/checkout@v2
 
